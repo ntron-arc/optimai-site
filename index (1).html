@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>OptimAI Network — Mine Data. Fuel AI. Earn Rewards.</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --g:#2aff8e;--gd:#1aaa5e;--gg:rgba(42,255,142,0.15);
+  --bg:#080e09;--bg2:#0d1510;--card:#0f1a10;--bd:#1a2e1c;
+  --tx:#e8f5ea;--mt:#5a7a5e;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;cursor:none;}
+
+/* cursor */
+.cur{position:fixed;width:12px;height:12px;background:var(--g);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .18s,height .18s,background .2s;}
+.cur-r{position:fixed;width:38px;height:38px;border:1.5px solid var(--g);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);opacity:.45;}
+
+/* grid bg */
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(42,255,142,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(42,255,142,.025) 1px,transparent 1px);background-size:55px 55px;pointer-events:none;z-index:0;}
+
+/* particles */
+.ptc{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.pt{position:absolute;border-radius:50%;background:var(--g);opacity:0;animation:fup linear infinite;}
+@keyframes fup{0%{opacity:0;transform:translateY(100vh)}10%{opacity:.5}90%{opacity:.1}100%{opacity:0;transform:translateY(-5vh)}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:1rem 3.5rem;background:rgba(8,14,9,.93);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);}
+.nlinks{display:flex;gap:2rem;list-style:none;justify-content:flex-start;}
+.nlinks a{color:var(--mt);text-decoration:none;font-size:.78rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;transition:color .2s;}
+.nlinks a:hover{color:var(--g);}
+.nl{display:flex;align-items:center;justify-content:center;gap:.65rem;text-decoration:none;line-height:1;}
+.nl img{width:30px;height:30px;object-fit:contain;display:block;}
+.nl-t{font-family:'Space Mono',monospace;font-size:.95rem;font-weight:700;color:var(--g);}
+.nl-t span{color:var(--tx);}
+.nav-right{display:flex;justify-content:flex-end;}
+.ncta{background:var(--g);color:var(--bg);padding:.52rem 1.3rem;border-radius:5px;font-family:'Space Mono',monospace;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-decoration:none;transition:box-shadow .2s,transform .2s;cursor:none;}
+.ncta:hover{box-shadow:0 0 28px rgba(42,255,142,.55);transform:translateY(-1px);}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:8rem 2rem 5rem;overflow:hidden;}
+.hglow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:900px;height:900px;background:radial-gradient(circle,rgba(42,255,142,.07) 0%,transparent 65%);pointer-events:none;animation:hpulse 6s ease-in-out infinite;}
+@keyframes hpulse{0%,100%{transform:translate(-50%,-50%) scale(1);}50%{transform:translate(-50%,-50%) scale(1.1);}}
+
+.hbadge{display:inline-flex;align-items:center;gap:.45rem;border:1px solid var(--bd);background:var(--card);padding:.38rem 1rem;border-radius:100px;font-family:'Space Mono',monospace;font-size:.7rem;color:var(--g);margin-bottom:1.8rem;animation:fadu .8s ease both;}
+.hbadge::before{content:'';width:6px;height:6px;background:var(--g);border-radius:50%;animation:bl 1.4s ease infinite;}
+@keyframes bl{0%,100%{opacity:1;}50%{opacity:.15;}}
+
+.hlogo{width:88px;height:88px;object-fit:contain;margin:0 auto 1.4rem auto;display:block;animation:fadu .8s .05s ease both;filter:drop-shadow(0 0 18px rgba(42,255,142,.4));}
+
+.hero h1{font-size:clamp(3.2rem,8.5vw,7.5rem);font-weight:800;line-height:.98;letter-spacing:-.035em;margin-bottom:1.4rem;animation:fadu .8s .1s ease both;}
+.hero h1 .ac{color:var(--g);}
+.hero h1 .ol{-webkit-text-stroke:1.5px var(--g);color:transparent;}
+
+.hsub{font-size:1.05rem;color:var(--mt);max-width:540px;margin:0 auto 2.4rem;line-height:1.8;animation:fadu .8s .2s ease both;}
+.hact{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;animation:fadu .8s .3s ease both;}
+
+.btn-p{background:var(--g);color:var(--bg);padding:.88rem 2rem;border-radius:6px;font-family:'Space Mono',monospace;font-size:.82rem;font-weight:700;letter-spacing:.04em;text-decoration:none;transition:box-shadow .2s,transform .2s;display:inline-block;cursor:none;}
+.btn-p:hover{box-shadow:0 0 36px rgba(42,255,142,.55);transform:translateY(-2px);}
+.btn-o{background:transparent;color:var(--tx);border:1.5px solid var(--bd);padding:.88rem 2rem;border-radius:6px;font-family:'Space Mono',monospace;font-size:.82rem;font-weight:700;letter-spacing:.04em;text-decoration:none;transition:border-color .2s,color .2s;display:inline-block;cursor:none;}
+.btn-o:hover{border-color:var(--g);color:var(--g);}
+
+/* scroll hint */
+.sh{position:absolute;bottom:2.2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.45rem;animation:fadu .8s .55s ease both;}
+.sh span{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--mt);letter-spacing:.14em;text-transform:uppercase;}
+.sm{width:21px;height:33px;border:1.5px solid var(--mt);border-radius:11px;display:flex;justify-content:center;padding-top:5px;}
+.sd{width:3px;height:6px;background:var(--g);border-radius:100px;animation:sda 2s ease infinite;}
+@keyframes sda{0%,100%{transform:translateY(0);opacity:1;}80%{transform:translateY(9px);opacity:0;}}
+
+/* TICKER */
+.ticker{background:var(--card);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);overflow:hidden;padding:.85rem 0;position:relative;z-index:1;}
+.tt{display:flex;gap:3.5rem;animation:tick 28s linear infinite;white-space:nowrap;}
+.ti{font-family:'Space Mono',monospace;font-size:.72rem;color:var(--g);letter-spacing:.1em;text-transform:uppercase;flex-shrink:0;}
+.ti span{color:var(--mt);margin:0 .4rem;}
+@keyframes tick{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);position:relative;z-index:1;}
+.stat{background:var(--bg);padding:2.2rem 1.5rem;text-align:center;transition:background .3s;}
+.stat:hover{background:var(--card);}
+.sn{font-size:2.6rem;font-weight:800;color:var(--g);font-family:'Space Mono',monospace;display:block;}
+.sl{font-size:.72rem;color:var(--mt);text-transform:uppercase;letter-spacing:.1em;margin-top:.3rem;display:block;}
+
+/* SECTIONS */
+section{position:relative;z-index:1;}
+.si{max-width:1160px;margin:0 auto;padding:5.5rem 2rem;}
+.slbl{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--g);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.9rem;display:flex;align-items:center;gap:.7rem;}
+.slbl::after{content:'';flex:1;height:1px;background:var(--bd);max-width:70px;}
+.stit{font-size:clamp(1.9rem,4vw,3rem);font-weight:800;line-height:1.15;margin-bottom:.9rem;}
+.sdesc{color:var(--mt);font-size:.95rem;line-height:1.8;max-width:520px;}
+
+/* LIVE COUNTERS */
+.csec{background:linear-gradient(135deg,#091408,#0c2010);}
+.cgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.8rem;margin-top:3rem;}
+.ccard{text-align:center;padding:2rem 1.5rem;border:1px solid rgba(42,255,142,.13);border-radius:14px;background:rgba(42,255,142,.025);position:relative;overflow:hidden;transition:border-color .3s,transform .3s;}
+.ccard:hover{border-color:rgba(42,255,142,.35);transform:translateY(-4px);}
+.ccard::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent);opacity:0;transition:opacity .3s;}
+.ccard:hover::after{opacity:1;}
+.cnum{font-family:'Space Mono',monospace;font-size:2rem;font-weight:700;color:var(--g);display:block;margin-bottom:.4rem;}
+.clbl{font-size:.72rem;color:var(--mt);text-transform:uppercase;letter-spacing:.1em;}
+
+/* HOW GRID */
+.hgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:3.5rem;}
+.hcard{border:1px solid var(--bd);background:var(--card);border-radius:14px;padding:2.2rem;position:relative;overflow:hidden;transition:border-color .3s,transform .3s;}
+.hcard:hover{border-color:var(--gd);transform:translateY(-5px);}
+.hcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--g),transparent);opacity:0;transition:opacity .3s;}
+.hcard:hover::before{opacity:1;}
+.hnum{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--g);letter-spacing:.1em;margin-bottom:1.3rem;opacity:.5;}
+.hico{font-size:2.4rem;margin-bottom:1rem;display:block;}
+.hcard h3{font-size:1.15rem;font-weight:700;margin-bottom:.7rem;}
+.hcard p{color:var(--mt);font-size:.86rem;line-height:1.75;}
+
+/* FEATURES */
+.flayout{display:grid;grid-template-columns:1fr 1fr;gap:4.5rem;align-items:center;margin-top:3.5rem;}
+.flist{display:flex;flex-direction:column;gap:1.3rem;}
+.fitem{display:flex;gap:1.1rem;padding:1.4rem;border:1px solid var(--bd);border-radius:11px;background:var(--card);transition:border-color .3s,transform .3s;}
+.fitem:hover{border-color:var(--gd);transform:translateX(5px);}
+.fico{font-size:1.7rem;flex-shrink:0;width:2.8rem;text-align:center;}
+.fitem h4{font-size:.95rem;font-weight:700;margin-bottom:.28rem;}
+.fitem p{color:var(--mt);font-size:.82rem;line-height:1.65;}
+
+/* TERMINAL */
+.term{background:#040a05;border:1px solid var(--bd);border-radius:14px;overflow:hidden;font-family:'Space Mono',monospace;font-size:.78rem;box-shadow:0 0 70px rgba(42,255,142,.07);}
+.tbar{background:var(--card);padding:.75rem 1.1rem;display:flex;align-items:center;gap:.45rem;border-bottom:1px solid var(--bd);}
+.d{width:10px;height:10px;border-radius:50%;}
+.dr{background:#ff5f57;}.dy{background:#febc2e;}.dg{background:#28c840;}
+.ttit{color:var(--mt);font-size:.68rem;margin-left:.4rem;}
+.tbody{padding:1.4rem;}
+.tl{margin-bottom:.5rem;opacity:0;animation:tin .3s ease forwards;}
+.tl:nth-child(1){animation-delay:.3s}.tl:nth-child(2){animation-delay:.8s}.tl:nth-child(3){animation-delay:1.3s}.tl:nth-child(4){animation-delay:1.8s}.tl:nth-child(5){animation-delay:2.3s}.tl:nth-child(6){animation-delay:2.8s}.tl:nth-child(7){animation-delay:3.3s}.tl:nth-child(8){animation-delay:3.8s}.tl:nth-child(9){animation-delay:4.3s}
+@keyframes tin{to{opacity:1;}}
+.tp{color:var(--g);}.to{color:var(--mt);padding-left:.9rem;}.ts{color:#2aff8e;padding-left:.9rem;}
+.tc{display:inline-block;width:7px;height:1em;background:var(--g);animation:bl 1s step-end infinite;vertical-align:text-bottom;}
+
+/* WHY */
+.wgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.4rem;margin-top:3.5rem;}
+.wcard{padding:1.8rem;border:1px solid var(--bd);background:var(--card);border-radius:14px;display:flex;gap:1.1rem;transition:all .3s;}
+.wcard:hover{border-color:var(--gd);transform:translateY(-4px);}
+.wn{font-family:'Space Mono',monospace;font-size:2.2rem;font-weight:700;color:rgba(42,255,142,.1);line-height:1;flex-shrink:0;width:2.8rem;}
+.wcard h4{font-size:.95rem;font-weight:700;margin-bottom:.45rem;}
+.wcard p{font-size:.83rem;color:var(--mt);line-height:1.65;}
+
+/* NODES */
+.ngrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:3.5rem;}
+.ncard{border:1px solid var(--bd);background:var(--card);border-radius:14px;padding:1.9rem;transition:all .3s;position:relative;}
+.ncard.ft{border-color:var(--g);box-shadow:0 0 45px rgba(42,255,142,.1);}
+.ncard:hover{border-color:var(--g);box-shadow:0 0 30px var(--gg);transform:translateY(-5px);}
+.nbadge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--g);color:var(--bg);font-family:'Space Mono',monospace;font-size:.62rem;font-weight:700;padding:.22rem .75rem;border-radius:100px;white-space:nowrap;}
+.ntag{display:inline-block;background:rgba(42,255,142,.1);color:var(--g);font-family:'Space Mono',monospace;font-size:.62rem;padding:.22rem .65rem;border-radius:100px;margin-bottom:1rem;}
+.ncard h3{font-size:1.1rem;font-weight:700;margin-bottom:.55rem;}
+.ncard p{color:var(--mt);font-size:.82rem;line-height:1.6;margin-bottom:1.1rem;}
+.nfl{list-style:none;}
+.nfl li{color:var(--mt);font-size:.76rem;padding:.28rem 0;border-top:1px solid var(--bd);display:flex;align-items:center;gap:.45rem;}
+.nfl li::before{content:'→';color:var(--g);font-family:'Space Mono',monospace;}
+
+/* TOKEN */
+.tkgrid{display:grid;grid-template-columns:1fr 1.4fr;gap:3.5rem;align-items:start;margin-top:3.5rem;}
+.tpill{display:inline-flex;align-items:center;gap:.45rem;background:rgba(42,255,142,.1);border:1px solid rgba(42,255,142,.3);color:var(--g);padding:.48rem 1.1rem;border-radius:100px;font-family:'Space Mono',monospace;font-size:.82rem;font-weight:700;margin-bottom:1.3rem;}
+.tinfo p{color:var(--mt);font-size:.88rem;line-height:1.8;margin-bottom:.9rem;}
+.rrows{display:flex;flex-direction:column;gap:.9rem;}
+.rrow{display:flex;align-items:center;gap:.9rem;}
+.rlbl{font-size:.78rem;color:var(--mt);width:165px;flex-shrink:0;}
+.rbg{flex:1;height:8px;background:var(--bd);border-radius:100px;overflow:hidden;}
+.rfill{height:100%;background:linear-gradient(90deg,var(--gd),var(--g));border-radius:100px;animation:gbar 2s ease both;}
+@keyframes gbar{from{width:0 !important;}}
+.rpct{font-family:'Space Mono',monospace;font-size:.72rem;color:var(--g);width:36px;text-align:right;}
+
+/* ROADMAP */
+.rm{position:relative;margin-top:3.5rem;}
+.rmline{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--bd);transform:translateX(-50%);}
+.rmitems{display:flex;flex-direction:column;gap:2.8rem;}
+.rmitem{display:grid;grid-template-columns:1fr 56px 1fr;align-items:center;gap:.8rem;}
+.rmdot{width:44px;height:44px;background:var(--card);border:2px solid var(--g);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;position:relative;z-index:1;margin:0 auto;}
+.rmdot.done{background:var(--g);}
+.rmcon{background:var(--card);border:1px solid var(--bd);border-radius:11px;padding:1.4rem;transition:border-color .3s;}
+.rmcon:hover{border-color:var(--gd);}
+.rmph{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--g);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.35rem;}
+.rmcon h4{font-size:.95rem;font-weight:700;margin-bottom:.35rem;}
+.rmcon p{font-size:.8rem;color:var(--mt);line-height:1.6;}
+
+/* COMMUNITY */
+.comgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:3.5rem;}
+.comcard{border:1px solid var(--bd);background:var(--card);border-radius:14px;padding:2rem;text-align:center;transition:all .3s;text-decoration:none;display:block;}
+.comcard:hover{border-color:var(--g);box-shadow:0 0 30px var(--gg);transform:translateY(-4px);}
+.comico{font-size:2.8rem;margin-bottom:.9rem;display:block;}
+.comcard h3{font-size:1rem;font-weight:700;margin-bottom:.45rem;color:var(--tx);}
+.comcard p{font-size:.82rem;color:var(--mt);line-height:1.6;}
+.comlink{display:inline-block;margin-top:1rem;font-family:'Space Mono',monospace;font-size:.7rem;color:var(--g);letter-spacing:.06em;}
+
+/* CTA */
+.ctasec{background:var(--card);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);position:relative;overflow:hidden;}
+.ctasec::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:650px;height:650px;background:radial-gradient(circle,rgba(42,255,142,.06),transparent 65%);pointer-events:none;}
+.ctain{max-width:680px;margin:0 auto;padding:6.5rem 2rem;text-align:center;position:relative;}
+.ctain h2{font-size:clamp(2rem,5vw,3.4rem);font-weight:800;margin-bottom:1.1rem;line-height:1.1;}
+.ctain p{color:var(--mt);font-size:.98rem;margin-bottom:2.3rem;line-height:1.8;}
+.ctabtns{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;}
+.ctanote{margin-top:1.4rem;font-family:'Space Mono',monospace;font-size:.66rem;color:var(--mt);}
+
+/* FOOTER */
+footer{padding:2.8rem 3.5rem;border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;position:relative;z-index:1;}
+.fbrand{display:flex;align-items:center;gap:.55rem;}
+.fbrand img{width:22px;height:22px;object-fit:contain;}
+.flogo{font-family:'Space Mono',monospace;font-size:.88rem;font-weight:700;color:var(--g);}
+.flinks{display:flex;gap:1.8rem;flex-wrap:wrap;}
+.flinks a{color:var(--mt);text-decoration:none;font-size:.78rem;transition:color .2s;}
+.flinks a:hover{color:var(--g);}
+.fcopy{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--mt);opacity:.45;}
+
+@keyframes fadu{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+.rv{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease;}
+.rv.on{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+
+@media(max-width:920px){
+  nav{padding:1rem 1.5rem;}.nlinks{display:none;}
+  .stats,.cgrid{grid-template-columns:repeat(2,1fr);}
+  .hgrid,.ngrid,.wgrid,.comgrid{grid-template-columns:1fr;}
+  .flayout,.tkgrid{grid-template-columns:1fr;gap:2rem;}
+  .rmline{display:none;}.rmitem{grid-template-columns:1fr;}.rmdot{display:none;}
+  .si{padding:4rem 1.5rem;}
+  footer{flex-direction:column;padding:2rem 1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="cur" id="cur"></div>
+<div class="cur-r" id="curR"></div>
+<div class="ptc" id="ptc"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nl">
+    <img src="data:image/png;base64,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" alt="OptimAI Logo"/>
+    <span class="nl-t">Optim<span>AI</span></span>
+  </a>
+  <ul class="nlinks">
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#nodes">Nodes</a></li>
+    <li><a href="#token">Token</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#community">Community</a></li>
+  </ul>
+  <div class="nav-right"><a href="https://node.optimai.network/register?ref=7233C238" target="_blank" rel="noopener" class="ncta">⚡ Start Mining Free</a></div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hglow"></div>
+  <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%;">
+    <div class="hbadge">🟢 L2 DePIN Reinforcement Data Network — Now Live</div>
+    <img src="data:image/png;base64,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" alt="OptimAI" class="hlogo"/>
+    <h1>Mine <span class="ac">Data.</span><br/>Fuel <span class="ol">AI.</span><br/>Earn <span class="ac">Rewards.</span></h1>
+    <p class="hsub">OptimAI Network is a decentralized reinforcement data network on OP-Stack L2. Contribute your device's idle resources, power next-gen AI agents, and earn real OPI tokens — completely free.</p>
+    <div class="hact">
+      <a href="https://node.optimai.network/register?ref=7233C238" target="_blank" rel="noopener" class="btn-p">⚡ Start Mining Free →</a>
+      <a href="https://docs.optimai.network" target="_blank" rel="noopener" class="btn-o">Read Whitepaper</a>
+    </div>
+  </div>
+  <div class="sh">
+    <div class="sm"><div class="sd"></div></div>
+    <span>Scroll to explore</span>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="tt">
+    <span class="ti">⚡ Mine Data <span>/</span></span><span class="ti">🤖 Fuel AI Agents <span>/</span></span><span class="ti">💰 Earn OPI Tokens <span>/</span></span><span class="ti">🔗 OP-Stack L2 <span>/</span></span><span class="ti">🌐 Global DePIN <span>/</span></span><span class="ti">🧠 RLHF Validation <span>/</span></span><span class="ti">🔒 Privacy First <span>/</span></span><span class="ti">🛰️ DeHIN Protocol <span>/</span></span><span class="ti">🌍 142 Countries <span>/</span></span>
+    <span class="ti">⚡ Mine Data <span>/</span></span><span class="ti">🤖 Fuel AI Agents <span>/</span></span><span class="ti">💰 Earn OPI Tokens <span>/</span></span><span class="ti">🔗 OP-Stack L2 <span>/</span></span><span class="ti">🌐 Global DePIN <span>/</span></span><span class="ti">🧠 RLHF Validation <span>/</span></span><span class="ti">🔒 Privacy First <span>/</span></span><span class="ti">🛰️ DeHIN Protocol <span>/</span></span><span class="ti">🌍 142 Countries <span>/</span></span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat rv"><span class="sn">100K+</span><span class="sl">Active Contributors</span></div>
+  <div class="stat rv d1"><span class="sn">L2</span><span class="sl">OP-Stack Blockchain</span></div>
+  <div class="stat rv d2"><span class="sn">OPI</span><span class="sl">Utility &amp; Gov Token</span></div>
+  <div class="stat rv d3"><span class="sn">142</span><span class="sl">Countries Joined</span></div>
+</div>
+
+<!-- LIVE COUNTERS -->
+<section class="csec">
+  <div class="si">
+    <div class="slbl">Live Network</div>
+    <h2 class="stit">The Network <span style="color:var(--g)">Never Sleeps</span></h2>
+    <p class="sdesc">Real-time stats from the global OptimAI DePIN network — running 24/7 in 142+ countries.</p>
+    <div class="cgrid">
+      <div class="ccard rv"><span class="cnum" id="c1">—</span><span class="clbl">OPI Tokens Distributed</span></div>
+      <div class="ccard rv d1"><span class="cnum" id="c2">—</span><span class="clbl">Data Tasks Completed</span></div>
+      <div class="ccard rv d2"><span class="cnum" id="c3">—</span><span class="clbl">Nodes Currently Online</span></div>
+      <div class="ccard rv d3"><span class="cnum" id="c4">—</span><span class="clbl">Countries Participating</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="si">
+    <div class="slbl">Process</div>
+    <h2 class="stit">How <span style="color:var(--g)">OptimAI</span> Works</h2>
+    <p class="sdesc">Three effortless steps to join the decentralized AI revolution and earn OPI tokens from day one.</p>
+    <div class="hgrid">
+      <div class="hcard rv"><div class="hnum">STEP 01</div><span class="hico">📥</span><h3>Install a Node</h3><p>Download the OptimAI Node — browser extension (Lite), mobile app (Edge), or desktop app (Core). Zero technical knowledge needed. Up and running in under 5 minutes.</p></div>
+      <div class="hcard rv d1"><div class="hnum">STEP 02</div><span class="hico">⛏️</span><h3>Contribute Resources</h3><p>Your node passively shares idle compute, bandwidth, and storage with the network. All data is processed locally first — your privacy is 100% protected at all times.</p></div>
+      <div class="hcard rv d2"><div class="hnum">STEP 03</div><span class="hico">🏆</span><h3>Earn OPI Tokens</h3><p>Get rewarded in OPI tokens for every single contribution. Stake them, trade them, vote with them, or keep growing your earnings within the OptimAI ecosystem.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" style="background:var(--bg2);">
+  <div class="si">
+    <div class="slbl">Core Technology</div>
+    <h2 class="stit">Built for the <span style="color:var(--g)">AI Age</span></h2>
+    <div class="flayout">
+      <div class="flist">
+        <div class="fitem rv"><div class="fico">🔗</div><div><h4>OP-Stack Layer 2 Blockchain</h4><p>All contributions anchored on-chain for full transparency and permissionless verification on an EVM-compatible L2.</p></div></div>
+        <div class="fitem rv d1"><div class="fico">🌐</div><div><h4>DePIN Infrastructure</h4><p>Global distributed nodes contribute compute, memory, and bandwidth — from smartphones to GPU server farms worldwide.</p></div></div>
+        <div class="fitem rv d2"><div class="fico">🧠</div><div><h4>DeHIN — Human Intelligence</h4><p>The Decentralized Human Intelligence Network rewards members for labeling and validating AI outputs — making AI truly human-aligned.</p></div></div>
+        <div class="fitem rv d3"><div class="fico">🔒</div><div><h4>Privacy-First Architecture</h4><p>Federated learning processes your data locally. Fully GDPR and CCPA compliant. Your Data. Your Agent. Your Control.</p></div></div>
+      </div>
+      <div class="term rv">
+        <div class="tbar"><div class="d dr"></div><div class="d dy"></div><div class="d dg"></div><span class="ttit">optimai-node — core v2.1.0</span></div>
+        <div class="tbody">
+          <div class="tl"><span class="tp">$ </span>optimai node start --core</div>
+          <div class="tl"><span class="to">→ Initializing OptimAI Core Node...</span></div>
+          <div class="tl"><span class="to">→ Connecting to DePIN network...</span></div>
+          <div class="tl" style="color:#2aff8e;padding-left:.9rem">✓ Node registered on OP-Stack L2</div>
+          <div class="tl"><span class="to">→ Starting data mining pipeline...</span></div>
+          <div class="tl" style="color:#2aff8e;padding-left:.9rem">✓ Mining active — 3 tasks running</div>
+          <div class="tl"><span class="to">→ Submitting RLHF validation...</span></div>
+          <div class="tl" style="color:#2aff8e;padding-left:.9rem">✓ +24.8 OPI tokens earned today 🎉</div>
+          <div class="tl"><span class="tp">$ </span><span class="tc"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY OPTIMAI -->
+<section id="why">
+  <div class="si">
+    <div class="slbl">Why OptimAI</div>
+    <h2 class="stit">Why <span style="color:var(--g)">The World Needs</span> This</h2>
+    <p class="sdesc">Traditional AI is broken — centralized, biased, and owned by a few. OptimAI is the fix.</p>
+    <div class="wgrid">
+      <div class="wcard rv"><div class="wn">01</div><div><h4>AI Power Back to the People</h4><p>A handful of corporations control all AI today. OptimAI redistributes that power to a global community — making AI open, fair, and decentralized for everyone.</p></div></div>
+      <div class="wcard rv d1"><div class="wn">02</div><div><h4>Your Idle Device = Real Income</h4><p>Your phone or laptop sits idle for hours daily. OptimAI puts that wasted compute to work and pays you OPI tokens for it. Zero cost, real rewards.</p></div></div>
+      <div class="wcard rv d2"><div class="wn">03</div><div><h4>Better AI Through Human Diversity</h4><p>Diverse community-generated data makes smarter, less biased AI. OptimAI's global network creates richer training data than any single corporation can.</p></div></div>
+      <div class="wcard rv d3"><div class="wn">04</div><div><h4>Compete with ChatGPT &amp; Manus</h4><p>OptimAI enables privacy-first, user-owned AI agents that automate web tasks — directly competing with Manus AI, ChatGPT Operator, and Grok.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- NODES -->
+<section id="nodes" style="background:var(--bg2);">
+  <div class="si">
+    <div class="slbl">Node Ecosystem</div>
+    <h2 class="stit">Choose Your <span style="color:var(--g)">Node</span></h2>
+    <p class="sdesc">Three node types for every level — from casual browser users to enterprise server operators.</p>
+    <div class="ngrid">
+      <div class="ncard rv"><span class="ntag">LITE NODE</span><h3>🌐 Browser Extension</h3><p>Easiest entry point. Install on Chrome and earn OPI tokens passively while you browse the web. Also on Telegram.</p><ul class="nfl"><li>Chrome, Firefox &amp; Safari</li><li>Telegram mini-app available</li><li>Zero technical setup</li><li>Passive background mining</li></ul></div>
+      <div class="ncard ft rv d1"><div class="nbadge">⭐ Most Popular</div><span class="ntag">EDGE NODE</span><h3>📱 Mobile App</h3><p>Run a node from your smartphone. Contribute on-device AI compute and earn rewards wherever you are — Android &amp; iOS.</p><ul class="nfl"><li>Android &amp; iOS support</li><li>On-device AI compute</li><li>Local data processing</li><li>Mobile-native OPI rewards</li></ul></div>
+      <div class="ncard rv d2"><span class="ntag">CORE NODE</span><h3>🖥️ Desktop / Server</h3><p>Maximum rewards. Deploy via CLI or Desktop GUI using cloud or home server resources for full-scale AI data mining.</p><ul class="nfl"><li>CLI &amp; Desktop GUI</li><li>Full data mining pipeline</li><li>Cloud deployment ready</li><li>Highest OPI token yield</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- TOKENOMICS -->
+<section id="token">
+  <div class="si">
+    <div class="slbl">Tokenomics</div>
+    <h2 class="stit">The <span style="color:var(--g)">OPI Token</span></h2>
+    <div class="tkgrid">
+      <div class="tinfo">
+        <div class="tpill">$OPI — Utility &amp; Governance Token</div>
+        <p>OPI is the native token of OptimAI Network. Every contribution — running a node, submitting data, or validating AI outputs — earns you real OPI rewards.</p>
+        <p>Token holders govern the protocol and vote on upgrades. The more you contribute, the more you earn and the more influence you hold.</p>
+        <div style="margin-top:1.4rem;padding:1.1rem;border:1px solid var(--bd);border-radius:11px;background:var(--card);">
+          <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--mt);margin-bottom:.75rem;letter-spacing:.1em;">OPI USE CASES</div>
+          <div style="display:flex;flex-wrap:wrap;gap:.45rem;">
+            <span style="background:rgba(42,255,142,.08);border:1px solid rgba(42,255,142,.2);color:var(--g);padding:.22rem .65rem;border-radius:100px;font-size:.72rem;">Governance</span>
+            <span style="background:rgba(42,255,142,.08);border:1px solid rgba(42,255,142,.2);color:var(--g);padding:.22rem .65rem;border-radius:100px;font-size:.72rem;">Staking</span>
+            <span style="background:rgba(42,255,142,.08);border:1px solid rgba(42,255,142,.2);color:var(--g);padding:.22rem .65rem;border-radius:100px;font-size:.72rem;">Trading</span>
+            <span style="background:rgba(42,255,142,.08);border:1px solid rgba(42,255,142,.2);color:var(--g);padding:.22rem .65rem;border-radius:100px;font-size:.72rem;">Node Access</span>
+            <span style="background:rgba(42,255,142,.08);border:1px solid rgba(42,255,142,.2);color:var(--g);padding:.22rem .65rem;border-radius:100px;font-size:.72rem;">Ecosystem Rewards</span>
+          </div>
+        </div>
+      </div>
+      <div class="rv">
+        <div style="margin-bottom:1.3rem;font-size:.72rem;color:var(--mt);font-family:'Space Mono',monospace;letter-spacing:.08em;">REWARD DISTRIBUTION</div>
+        <div class="rrows">
+          <div class="rrow"><span class="rlbl">Node Operators</span><div class="rbg"><div class="rfill" style="width:40%"></div></div><span class="rpct">40%</span></div>
+          <div class="rrow"><span class="rlbl">Data Miners</span><div class="rbg"><div class="rfill" style="width:30%"></div></div><span class="rpct">30%</span></div>
+          <div class="rrow"><span class="rlbl">RLHF Validators</span><div class="rbg"><div class="rfill" style="width:20%"></div></div><span class="rpct">20%</span></div>
+          <div class="rrow"><span class="rlbl">Developers</span><div class="rbg"><div class="rfill" style="width:10%"></div></div><span class="rpct">10%</span></div>
+        </div>
+        <div style="margin-top:2rem;padding:1.2rem;border:1px solid var(--bd);border-radius:11px;background:var(--card);">
+          <div style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--mt);margin-bottom:.6rem;letter-spacing:.1em;">YOUR REFERRAL CODE</div>
+          <div style="font-family:'Space Mono',monospace;font-size:1.1rem;color:var(--g);font-weight:700;letter-spacing:.1em;">7233C238</div>
+          <div style="font-size:.75rem;color:var(--mt);margin-top:.4rem;">Share your link and earn bonus OPI for every referral who joins!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section id="roadmap" style="background:var(--bg2);">
+  <div class="si">
+    <div class="slbl">Roadmap</div>
+    <h2 class="stit">The Path <span style="color:var(--g)">Forward</span></h2>
+    <p class="sdesc">A clear execution plan to build the world's most powerful decentralized AI network.</p>
+    <div class="rm">
+      <div class="rmline"></div>
+      <div class="rmitems">
+        <div class="rmitem rv">
+          <div class="rmcon" style="text-align:right;"><div class="rmph">Phase 1 — ✅ Complete</div><h4>Foundation Launch</h4><p>Lite Node browser extension launched. Telegram mini-app deployed. 100K+ early contributors onboarded globally.</p></div>
+          <div class="rmdot done">✓</div><div></div>
+        </div>
+        <div class="rmitem rv">
+          <div></div>
+          <div class="rmdot done">✓</div>
+          <div class="rmcon"><div class="rmph">Phase 2 — ✅ Complete</div><h4>Core Node &amp; DeHIN</h4><p>Core Node CLI &amp; GUI deployed. DeHIN protocol launched for human-in-the-loop AI validation. OPI rewards activated.</p></div>
+        </div>
+        <div class="rmitem rv">
+          <div class="rmcon" style="text-align:right;"><div class="rmph">Phase 3 — 🔄 In Progress</div><h4>Mobile Edge Nodes</h4><p>Android &amp; iOS Edge Node apps launching. Mobile-native data contribution and on-device AI compute for smartphones.</p></div>
+          <div class="rmdot">🔄</div><div></div>
+        </div>
+        <div class="rmitem rv">
+          <div></div>
+          <div class="rmdot">🚀</div>
+          <div class="rmcon"><div class="rmph">Phase 4 — Upcoming</div><h4>Mainnet &amp; TGE</h4><p>OP-Stack L2 mainnet launch. OPI Token Generation Event (TGE). Full governance rights. DEX and CEX listings.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section id="community">
+  <div class="si">
+    <div class="slbl">Community</div>
+    <h2 class="stit">Join the <span style="color:var(--g)">Revolution</span></h2>
+    <p class="sdesc">Connect with 100,000+ contributors across every platform. The OptimAI community is growing fast.</p>
+    <div class="comgrid">
+      <a href="https://x.com/OptimaiNetwork" target="_blank" rel="noopener" class="comcard rv">
+        <span class="comico">🐦</span>
+        <h3>X / Twitter</h3>
+        <p>Latest news, updates, and announcements from the official OptimAI team.</p>
+        <span class="comlink">@OptimaiNetwork →</span>
+      </a>
+      <a href="https://t.me/optimainetwork" target="_blank" rel="noopener" class="comcard rv d1">
+        <span class="comico">💬</span>
+        <h3>Telegram</h3>
+        <p>Join the most active community chat. Get support, share progress, and meet fellow miners.</p>
+        <span class="comlink">t.me/optimainetwork →</span>
+      </a>
+      <a href="https://node.optimai.network/register?ref=7233C238" target="_blank" rel="noopener" class="comcard rv d2">
+        <span class="comico">⚡</span>
+        <h3>Start Mining Now</h3>
+        <p>Register with referral code <strong style="color:var(--g)">7233C238</strong> and start earning OPI tokens from day one — completely free.</p>
+        <span class="comlink">Join with referral →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="ctasec">
+  <div class="ctain">
+    <img src="data:image/png;base64,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" alt="OptimAI" style="width:65px;height:65px;object-fit:contain;margin-bottom:1.4rem;filter:drop-shadow(0 0 20px rgba(42,255,142,.4));"/>
+    <h2>Your Data.<br/><span style="color:var(--g)">Your Agent.</span><br/>Your Control.</h2>
+    <p>Join tens of thousands already mining data, fueling AI, and earning OPI every day. The decentralized AI revolution is here — and it costs you nothing to join.</p>
+    <div class="ctabtns">
+      <a href="https://node.optimai.network/register?ref=7233C238" target="_blank" rel="noopener" class="btn-p">⚡ Start Mining Free →</a>
+      <a href="https://t.me/optimainetwork" target="_blank" rel="noopener" class="btn-o">💬 Join Community</a>
+    </div>
+    <p class="ctanote">No investment required · Free to join · Earn from day one · Referral code: 7233C238</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fbrand">
+    <img src="data:image/png;base64,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" alt="OptimAI" style="filter:brightness(0) invert(1);"/>
+    <span class="flogo">OptimAI Network</span>
+  </div>
+  <div class="flinks">
+    <a href="https://optimai.network" target="_blank">Official Site</a>
+    <a href="https://docs.optimai.network" target="_blank">Docs</a>
+    <a href="https://x.com/OptimaiNetwork" target="_blank">X / Twitter</a>
+    <a href="https://t.me/optimainetwork" target="_blank">Telegram</a>
+    <a href="https://node.optimai.network/register?ref=7233C238" target="_blank">⚡ Start Mining</a>
+  </div>
+  <div class="fcopy">Community fan site · Not official · #OptimAI #DePIN #OPI</div>
+</footer>
+
+<script>
+const LOGO = "data:image/png;base64,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";
+
+// Inject logo everywhere
+document.querySelectorAll('img[alt="OptimAI Logo"], img[alt="OptimAI"], img[alt="OptimAI Network"], img[alt=""]').forEach(img => {
+  img.src = LOGO;
+});
+
+// Custom cursor with smooth lag
+const cur=document.getElementById('cur'),curR=document.getElementById('curR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function animR(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;curR.style.left=rx+'px';curR.style.top=ry+'px';requestAnimationFrame(animR);})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.cssText+=';width:20px;height:20px;background:#0f1a10;border:2px solid #2aff8e;';curR.style.width='56px';curR.style.height='56px';});
+  el.addEventListener('mouseleave',()=>{cur.style.cssText+=';width:12px;height:12px;background:#2aff8e;border:none;';curR.style.width='38px';curR.style.height='38px';});
+});
+
+// Floating particles
+const pc=document.getElementById('ptc');
+for(let i=0;i<30;i++){
+  const p=document.createElement('div');p.className='pt';
+  const s=1+Math.random()*2.5;
+  p.style.cssText=`left:${Math.random()*100}%;width:${s}px;height:${s}px;animation-duration:${9+Math.random()*16}s;animation-delay:${Math.random()*14}s;`;
+  pc.appendChild(p);
+}
+
+// Scroll reveal
+const rvs=document.querySelectorAll('.rv');
+const ro=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');ro.unobserve(e.target);}});},{threshold:.1});
+rvs.forEach(r=>ro.observe(r));
+
+// Animated counters
+const ctrs=[
+  {el:document.getElementById('c1'),val:2847392,fmt:n=>n.toLocaleString()},
+  {el:document.getElementById('c2'),val:18432,fmt:n=>n.toLocaleString()},
+  {el:document.getElementById('c3'),val:103847,fmt:n=>n.toLocaleString()},
+  {el:document.getElementById('c4'),val:142,fmt:n=>String(n)},
+];
+let started=false;
+const co=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting&&!started){started=true;
+  ctrs.forEach(c=>{let v=0;const inc=c.val/100;
+    const t=setInterval(()=>{v+=inc;if(v>=c.val){v=c.val;clearInterval(t);}c.el.textContent=c.fmt(Math.floor(v));},16);
+  });
+}});},{threshold:.4});
+const cs=document.querySelector('.csec');if(cs)co.observe(cs);
+
+// Live ticking simulation
+setInterval(()=>{const e=document.getElementById('c1');const v=parseInt(e.textContent.replace(/,/g,''));if(!isNaN(v))e.textContent=(v+Math.floor(Math.random()*8+1)).toLocaleString();},2500);
+setInterval(()=>{const e=document.getElementById('c2');const v=parseInt(e.textContent.replace(/,/g,''));if(!isNaN(v))e.textContent=(v+Math.floor(Math.random()*3+1)).toLocaleString();},4000);
+setInterval(()=>{const e=document.getElementById('c3');const v=parseInt(e.textContent.replace(/,/g,''));if(!isNaN(v))e.textContent=(v+Math.floor(Math.random()*2)).toLocaleString();},6000);
+</script>
+</body>
+</html>
